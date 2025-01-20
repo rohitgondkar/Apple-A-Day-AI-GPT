@@ -9,17 +9,22 @@ document.addEventListener("DOMContentLoaded", async function () {
                 },
                 body: JSON.stringify({
                     model: "gpt-4",
-                    prompt: "Suggest a trending stock for today with a reason and brief justification.",
-                    max_tokens: 100
+                    prompt: "Suggest a trending stock for today with its current price, reason for the recommendation, and a brief AI-based justification.",
+                    max_tokens: 150
                 })
             });
             const data = await response.json();
-            const stockDetails = data.choices[0].text.trim().split(" - ");
-            document.getElementById("stock-symbol").textContent = stockDetails[0] || "N/A";
-            document.getElementById("stock-price").textContent = "Live data required";
-            document.getElementById("stock-reason").textContent = stockDetails[1] || "No reason provided.";
-            document.getElementById("ai-explanation").textContent = stockDetails[2] || "No explanation available.";
+            if (data.choices && data.choices.length > 0) {
+                const stockDetails = data.choices[0].text.trim().split(" - ");
+                document.getElementById("stock-symbol").textContent = stockDetails[0] || "N/A";
+                document.getElementById("stock-price").textContent = stockDetails[1] || "$0.00";
+                document.getElementById("stock-reason").textContent = stockDetails[2] || "No reason provided.";
+                document.getElementById("ai-explanation").textContent = stockDetails[3] || "No explanation available.";
+            } else {
+                throw new Error("Invalid response format");
+            }
         } catch (error) {
+            console.error("Error fetching stock recommendation:", error);
             document.getElementById("stock-symbol").textContent = "N/A";
             document.getElementById("stock-price").textContent = "$0.00";
             document.getElementById("stock-reason").textContent = "Error fetching data.";
