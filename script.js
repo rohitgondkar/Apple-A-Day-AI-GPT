@@ -6,7 +6,7 @@ document.addEventListener("DOMContentLoaded", async function () {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
-                    "Authorization": "Bearer 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"
+                    "Authorization": "Bearer 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"
                 },
                 body: JSON.stringify({
                     model: "gpt-4",
