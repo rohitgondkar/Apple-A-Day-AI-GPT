@@ -1,13 +1,12 @@
 document.addEventListener("DOMContentLoaded", async function () {
     async function getStockRecommendation() {
-        // Mock API response (replace with real API)
-        const mockData = { symbol: "AAPL", price: "189.45", reason: "Strong earnings & AI growth" };
-        
-        document.getElementById("stock-symbol").textContent = mockData.symbol;
-        document.getElementById("stock-price").textContent = `$${mockData.price}`;
-        document.getElementById("stock-reason").textContent = mockData.reason;
+        const response = await fetch("https://api.example.com/stockpick");
+        const data = await response.json();
+        document.getElementById("stock-symbol").textContent = data.symbol;
+        document.getElementById("stock-price").textContent = `$${data.price}`;
+        document.getElementById("stock-reason").textContent = data.reason;
     }
-    
+
     document.getElementById("refresh-btn").addEventListener("click", getStockRecommendation);
     getStockRecommendation();
 });
