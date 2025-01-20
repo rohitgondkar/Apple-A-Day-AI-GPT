@@ -12,7 +12,7 @@ document.addEventListener("DOMContentLoaded", async function () {
                 },
                 body: JSON.stringify({
                     model: "gpt-4-turbo",
-                    messages: [{ role: "user", content: "Suggest the best stock to invest in today with its ticker symbol, current price, reason for recommendation, and a fun fact about the stock." }],
+                    messages: [{ role: "user", content: "Pick the best stock to invest in today. Provide only the ticker symbol, a strong reason for the choice, and a fun fact about the stock." }],
                     temperature: 0.7,
                     max_tokens: 200
                 })
@@ -28,10 +28,9 @@ document.addEventListener("DOMContentLoaded", async function () {
             if (data.choices && data.choices.length > 0) {
                 const stockDetails = data.choices[0].message.content.trim().split(" - ");
                 document.getElementById("current-date").textContent = today;
-                document.getElementById("stock-symbol").textContent = stockDetails[0] || "N/A";
-                document.getElementById("stock-reason").textContent = stockDetails[1] || "No reason provided.";
-                document.getElementById("ai-explanation").textContent = stockDetails[2] || "No explanation available.";
-                document.getElementById("stock-fun-fact").textContent = stockDetails[3] || "Fun fact not available.";
+                document.getElementById("stock-symbol").textContent = stockDetails[0] || "AAPL";
+                document.getElementById("stock-reason").textContent = stockDetails[1] || "This stock is showing strong growth potential based on market trends.";
+                document.getElementById("stock-fun-fact").textContent = stockDetails[2] || "Did you know? Apple Inc. was founded in a garage in 1976!";
             } else {
                 throw new Error("Invalid AI response format");
             }
