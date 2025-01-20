@@ -7,7 +7,7 @@ body {
 }
 
 .container {
-    max-width: 500px;
+    max-width: 600px;
     margin: auto;
     padding: 20px;
     border-radius: 15px;
@@ -25,4 +25,10 @@ body {
     font-size: 14px;
     margin-top: 10px;
     color: #555;
+}
+
+canvas {
+    max-width: 100%;
+    height: auto;
+    margin-top: 20px;
 }
