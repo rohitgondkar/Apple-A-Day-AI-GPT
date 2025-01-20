@@ -1,6 +1,7 @@
 document.addEventListener("DOMContentLoaded", async function () {
     async function getStockRecommendation() {
         try {
+            console.log("Fetching AI stock recommendation...");
             const response = await fetch("https://api.openai.com/v1/completions", {
                 method: "POST",
                 headers: {
@@ -9,12 +10,18 @@ document.addEventListener("DOMContentLoaded", async function () {
                 },
                 body: JSON.stringify({
                     model: "gpt-4",
-                    prompt: "Suggest a trending stock for today with its ticker symbol, current price, reason for the recommendation, and a brief AI-based justification.",
+                    prompt: "Suggest a trending stock for today with its current price, reason for the recommendation, and a brief AI-based justification.",
                     max_tokens: 150
                 })
             });
 
+            if (!response.ok) {
+                throw new Error(`OpenAI API request failed with status: ${response.status}`);
+            }
+
             const data = await response.json();
+            console.log("AI Response:", data);
+
             if (data.choices && data.choices.length > 0) {
                 const stockDetails = data.choices[0].text.trim().split(" - ");
                 const stockSymbol = stockDetails[0] || "AAPL"; // Default to AAPL if AI fails
@@ -24,6 +31,10 @@ document.addEventListener("DOMContentLoaded", async function () {
 
                 // Fetch real-time stock price from Finnhub
                 const stockResponse = await fetch(`https://finnhub.io/api/v1/quote?symbol=${stockSymbol}&token=cu26d8pr01ql7sc76tm0cu26d8pr01ql7sc76tmg`);
+                if (!stockResponse.ok) {
+                    throw new Error(`Finnhub API request failed with status: ${stockResponse.status}`);
+                }
+                
                 const stockData = await stockResponse.json();
                 document.getElementById("stock-price").textContent = `$${stockData.c || "0.00"}`;
 
@@ -34,6 +45,7 @@ document.addEventListener("DOMContentLoaded", async function () {
             }
         } catch (error) {
             console.error("Error fetching stock recommendation:", error);
+            document.getElementById("error-log").textContent = `Error: ${error.message}`;
             document.getElementById("stock-symbol").textContent = "N/A";
             document.getElementById("stock-price").textContent = "$0.00";
             document.getElementById("stock-reason").textContent = "Error fetching data.";
@@ -42,36 +54,44 @@ document.addEventListener("DOMContentLoaded", async function () {
     }
 
     async function renderStockChart(stockSymbol) {
-        const response = await fetch(`https://finnhub.io/api/v1/stock/candle?symbol=${stockSymbol}&resolution=D&count=5&token=cu26d8pr01ql7sc76tm0cu26d8pr01ql7sc76tmg`);
-        const data = await response.json();
+        try {
+            const response = await fetch(`https://finnhub.io/api/v1/stock/candle?symbol=${stockSymbol}&resolution=D&count=5&token=cu26d8pr01ql7sc76tm0cu26d8pr01ql7sc76tmg`);
+            if (!response.ok) {
+                throw new Error(`Finnhub stock chart API failed with status: ${response.status}`);
+            }
+            
+            const data = await response.json();
 
-        if (data.s !== "ok") {
-            console.error("Error fetching stock chart data");
-            return;
-        }
+            if (data.s !== "ok") {
+                throw new Error("Error fetching stock chart data");
+            }
 
-        const ctx = document.getElementById('stockChart').getContext('2d');
-        new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: ["Day 1", "Day 2", "Day 3", "Day 4", "Day 5"],
-                datasets: [{
-                    label: `${stockSymbol} Price Trend`,
-                    data: data.c,
-                    borderColor: 'red',
-                    backgroundColor: 'rgba(255, 0, 0, 0.1)',
-                    fill: true
-                }]
-            },
-            options: {
-                responsive: true,
-                scales: {
-                    y: {
-                        beginAtZero: false
+            const ctx = document.getElementById('stockChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ["Day 1", "Day 2", "Day 3", "Day 4", "Day 5"],
+                    datasets: [{
+                        label: `${stockSymbol} Price Trend`,
+                        data: data.c,
+                        borderColor: 'red',
+                        backgroundColor: 'rgba(255, 0, 0, 0.1)',
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: false
+                        }
                     }
                 }
-            }
-        });
+            });
+        } catch (error) {
+            console.error("Error rendering stock chart:", error);
+            document.getElementById("error-log").textContent = `Chart Error: ${error.message}`;
+        }
     }
 
     getStockRecommendation();
