@@ -21,17 +21,16 @@
                 const today = new Date().toDateString();
                 const completion = await openai.chat.completions.create({
                     model: "gpt-4-turbo",
-                    messages: [{ role: "user", content: "Suggest the best stock to invest in today with its ticker symbol, current price, reason for recommendation, and a fun fact about the stock." }],
+                    messages: [{ role: "user", content: "Pick the best stock to invest in today. Provide only the ticker symbol, a strong reason for the choice, and a fun fact about the stock." }],
                     temperature: 0.7,
-                    max_tokens: 2000
+                    max_tokens: 200
                 });
                 
                 const stockDetails = completion.choices[0].message.content.trim().split(" - ");
                 document.getElementById("current-date").textContent = today;
-                document.getElementById("stock-symbol").textContent = stockDetails[0] || "N/A";
-                document.getElementById("stock-reason").textContent = stockDetails[1] || "No reason provided.";
-                document.getElementById("ai-explanation").textContent = stockDetails[2] || "No explanation available.";
-                document.getElementById("stock-fun-fact").textContent = stockDetails[3] || "Fun fact not available.";
+                document.getElementById("stock-symbol").textContent = stockDetails[0] || "AAPL";
+                document.getElementById("stock-reason").textContent = stockDetails[1] || "This stock is showing strong growth potential based on market trends.";
+                document.getElementById("stock-fun-fact").textContent = stockDetails[2] || "Did you know? Apple Inc. was founded in a garage in 1976!";
             } catch (error) {
                 console.error("Error fetching stock recommendation:", error);
                 document.getElementById("error-log").textContent = `Error: ${error.message}`;
@@ -42,8 +41,8 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            background: white;
-            color: black;
+            background: linear-gradient(135deg, #1e293b, #0f172a);
+            color: white;
             text-align: center;
             padding: 20px;
         }
@@ -52,18 +51,18 @@
             margin: auto;
             padding: 20px;
             border-radius: 15px;
-            background: rgba(0, 0, 0, 0.05);
-            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+            background: rgba(255, 255, 255, 0.1);
+            box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.3);
         }
         .stock-card {
             padding: 20px;
             border-radius: 10px;
-            background: rgba(0, 0, 0, 0.1);
+            background: rgba(255, 255, 255, 0.2);
         }
         .disclaimer {
             font-size: 14px;
             margin-top: 10px;
-            color: #555;
+            color: #ddd;
         }
         canvas {
             max-width: 100%;
@@ -78,18 +77,16 @@
 </head>
 <body>
     <div class="container">
-        <h1 class="glow">🍎 Apple a Day - Keeps Losses Awaygg! 📈</h1>
+        <h1 class="glow">🍎 Apple a Day - Keeps Losses Away205! 🚀</h1>
         <h2 class="subheading">📅 Today's Date: <span id="current-date">Loading...</span></h2>
-        <h2 class="subheading">📊 Today's AI Recommended Stock is: </h2>
         <div class="stock-card">
-            <h2 id="stock-symbol">Loading...</h2>
-            <p id="stock-reason">Analyzing trends...</p>
-            <p id="ai-justification">Why AI recommends this: <span id="ai-explanation">Fetching data...</span></p>
-            <p id="stock-fun-fact">🧐 Fun Fact: Loading...</p>
+            <h2>💹 Ticker Symbol: <span id="stock-symbol">Loading...</span></h2>
+            <p id="stock-reason">Analyzing market trends...</p>
+            <p id="stock-fun-fact">💡 Fun Fact: Loading...</p>
             <p id="error-log" class="error-message"></p>
         </div>
         <canvas id="stockChart"></canvas>
-        <p class="disclaimer">🎲 Disclaimer: Our AI is sharp, but it's not a stock market time traveler (yet!). Use the insights, trust your gut, and make the final call—fortune favors the smart! 🚀📈</p>
+        <p class="disclaimer">🎲 Disclaimer: AI picks stocks, but you make the final call! Invest wisely. 🚀📈</p>
     </div>
 </body>
 </html>
