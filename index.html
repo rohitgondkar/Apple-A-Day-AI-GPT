@@ -5,4 +5,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AI Stock Daily Pick</title>
     <link rel="stylesheet" href="styles.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="script.js" defer></script>
+</head>
+<body>
+    <div class="container">
+        <h1 class="glow">🍎 Apple a Day = Keeps Losses Away! 📈</h1>
+        <h2 class="subheading">📊 Today's AI Recommended Stock is: </h2>
+        <div class="stock-card">
+            <h2 id="stock-symbol">Loading...</h2>
+            <p id="stock-price">$0.00</p>
+            <p id="stock-reason">Analyzing trends...</p>
+            <p id="ai-justification">Why AI recommends this: <span id="ai-explanation">Fetching data...</span></p>
+        </div>
+        <canvas id="stockChart"></canvas>
+        <p class="disclaimer">🎲 Disclaimer: Our AI is sharp, but it's not a stock market time traveler (yet!). Use the insights, trust your gut, and make the final call—fortune favors the smart! 🚀📈</p>
+    </div>
+</body>
+</html>
