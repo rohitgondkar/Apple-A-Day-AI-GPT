@@ -2,15 +2,15 @@ document.addEventListener("DOMContentLoaded", async function () {
     async function getStockRecommendation() {
         try {
             console.log("Fetching AI stock recommendation...");
-            const response = await fetch("https://api.openai.com/v1/completions", {
+            const response = await fetch("https://api.openai.com/v1/chat/completions", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
                     "Authorization": "Bearer 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"
                 },
                 body: JSON.stringify({
-                    model: "gpt-4",
-                    prompt: "Suggest a trending stock for today with its current price, reason for the recommendation, and a brief AI-based justification.",
+                    model: "gpt-4-turbo",
+                    messages: [{ role: "system", content: "Suggest a trending stock for today with its current price, reason for the recommendation, and a brief AI-based justification." }],
                     max_tokens: 150
                 })
             });
@@ -23,7 +23,7 @@ document.addEventListener("DOMContentLoaded", async function () {
             console.log("AI Response:", data);
 
             if (data.choices && data.choices.length > 0) {
-                const stockDetails = data.choices[0].text.trim().split(" - ");
+                const stockDetails = data.choices[0].message.content.trim().split(" - ");
                 const stockSymbol = stockDetails[0] || "AAPL"; // Default to AAPL if AI fails
                 document.getElementById("stock-symbol").textContent = stockSymbol;
                 document.getElementById("stock-reason").textContent = stockDetails[1] || "No reason provided.";
