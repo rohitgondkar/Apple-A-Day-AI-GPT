@@ -8,6 +8,34 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="script.js" defer></script>
+    <script type="module">
+        import OpenAI from 'openai';
+        
+        const openai = new OpenAI({
+            apiKey: "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"
+        });
+        
+        async function getStockRecommendation() {
+            try {
+                console.log("Fetching AI stock recommendation...");
+                const completion = await openai.chat.completions.create({
+                    model: "gpt-4-turbo",
+                    messages: [{ role: "user", content: "Suggest a trending stock for today with its ticker symbol, price, and reasoning." }],
+                    temperature: 0.7,
+                    max_tokens: 2000
+                });
+                
+                const stockDetails = completion.choices[0].message.content.trim().split(" - ");
+                document.getElementById("stock-symbol").textContent = stockDetails[0] || "N/A";
+                document.getElementById("stock-reason").textContent = stockDetails[1] || "No reason provided.";
+                document.getElementById("ai-explanation").textContent = stockDetails[2] || "No explanation available.";
+            } catch (error) {
+                console.error("Error fetching stock recommendation:", error);
+                document.getElementById("error-log").textContent = `Error: ${error.message}`;
+            }
+        }
+        getStockRecommendation();
+    </script>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -47,11 +75,10 @@
 </head>
 <body>
     <div class="container">
-        <h1 class="glow">🍎 Apple a Day = Keeps Losses Away5! 📈</h1>
+        <h1 class="glow">🍎 Apple a Day = Keeps Losses Awaypo! 📈</h1>
         <h2 class="subheading">📊 Today's AI Recommended Stock is: </h2>
         <div class="stock-card">
             <h2 id="stock-symbol">Loading...</h2>
-            <p id="stock-price">$0.00</p>
             <p id="stock-reason">Analyzing trends...</p>
             <p id="ai-justification">Why AI recommends this: <span id="ai-explanation">Fetching data...</span></p>
             <p id="error-log" class="error-message"></p>
@@ -59,72 +86,5 @@
         <canvas id="stockChart"></canvas>
         <p class="disclaimer">🎲 Disclaimer: Our AI is sharp, but it's not a stock market time traveler (yet!). Use the insights, trust your gut, and make the final call—fortune favors the smart! 🚀📈</p>
     </div>
-    <script>
-        document.addEventListener("DOMContentLoaded", async function () {
-            async function getStockPrice(stockSymbol) {
-                try {
-                    console.log(`Fetching stock price for ${stockSymbol}...`);
-                    const response = await fetch(`https://finnhub.io/api/v1/quote?symbol=${stockSymbol}&token=cu6v2thr01qh2ki6ki00cu6v2thr01qh2ki6ki0g`);
-                    
-                    if (!response.ok) {
-                        throw new Error(`Finnhub API request failed with status: ${response.status}`);
-                    }
-                    
-                    const data = await response.json();
-                    console.log("Finnhub API Response:", data);
-                    return data.c || "N/A";
-                } catch (error) {
-                    console.error("Error fetching stock price:", error);
-                    return "N/A";
-                }
-            }
-
-            async function getStockRecommendation() {
-                try {
-                    console.log("Fetching AI stock recommendation...");
-                    const response = await fetch("https://api.openai.com/v1/completions", {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json",
-                            "Authorization": "Bearer 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"
-                        },
-                        body: JSON.stringify({
-                            model: "gpt-4",
-                            prompt: "Suggest a trending stock for today with its current price, reason for the recommendation, and a brief AI-based justification.",
-                            max_tokens: 150
-                        })
-                    });
-                    
-                    if (!response.ok) {
-                        throw new Error(`OpenAI API request failed with status: ${response.status}. Check API key or usage limits.`);
-                    }
-                    
-                    const data = await response.json();
-                    console.log("AI Response:", data);
-                    
-                    if (data.choices && data.choices.length > 0) {
-                        const stockDetails = data.choices[0].text.trim().split(" - ");
-                        const stockSymbol = stockDetails[0] || "N/A";
-                        document.getElementById("stock-symbol").textContent = stockSymbol;
-                        document.getElementById("stock-reason").textContent = stockDetails[1] || "No reason provided.";
-                        document.getElementById("ai-explanation").textContent = stockDetails[2] || "No explanation available.";
-
-                        const stockPrice = await getStockPrice(stockSymbol);
-                        document.getElementById("stock-price").textContent = `$${stockPrice}`;
-                    } else {
-                        throw new Error("Invalid AI response format");
-                    }
-                } catch (error) {
-                    console.error("Error fetching stock recommendation:", error);
-                    document.getElementById("error-log").textContent = `Error: ${error.message}`;
-                    document.getElementById("stock-symbol").textContent = "N/A";
-                    document.getElementById("stock-price").textContent = "$0.00";
-                    document.getElementById("stock-reason").textContent = "Error fetching data.";
-                    document.getElementById("ai-explanation").textContent = "Error fetching explanation.";
-                }
-            }
-            getStockRecommendation();
-        });
-    </script>
 </body>
 </html>
