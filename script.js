@@ -12,7 +12,7 @@ document.addEventListener("DOMContentLoaded", async function () {
                 },
                 body: JSON.stringify({
                     model: "gpt-4-turbo",
-                    messages: [{ role: "user", content: "Pick the best stock to invest in today. Provide only the ticker symbol, a strong reason for the choice, and a fun fact about the stock." }],
+                    messages: [{ role: "user", content: "Pick the best stock to invest in today. Provide only the ticker symbol. Then, provide two bullet points: one with a strong reason for the choice (use emojis) and another with a fun fact about the stock (use emojis)." }],
                     temperature: 0.7,
                     max_tokens: 200
                 })
@@ -29,8 +29,8 @@ document.addEventListener("DOMContentLoaded", async function () {
                 const stockDetails = data.choices[0].message.content.trim().split(" - ");
                 document.getElementById("current-date").textContent = today;
                 document.getElementById("stock-symbol").textContent = stockDetails[0] || "AAPL";
-                document.getElementById("stock-reason").textContent = stockDetails[1] || "This stock is showing strong growth potential based on market trends.";
-                document.getElementById("stock-fun-fact").textContent = stockDetails[2] || "Did you know? Apple Inc. was founded in a garage in 1976!";
+                document.getElementById("stock-reason").innerHTML = `✅ ${stockDetails[1] || "This stock is showing strong growth potential based on market trends."}`;
+                document.getElementById("stock-fun-fact").innerHTML = `🎉 ${stockDetails[2] || "Did you know? Apple Inc. was founded in a garage in 1976!"}`;
             } else {
                 throw new Error("Invalid AI response format");
             }
