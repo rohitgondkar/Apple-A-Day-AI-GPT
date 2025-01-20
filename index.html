@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Stock Daily Pick</title>
+    <title>Apple a Day AI - Stock Recommendation</title>
     <link rel="stylesheet" href="styles.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -18,17 +18,20 @@
         async function getStockRecommendation() {
             try {
                 console.log("Fetching AI stock recommendation...");
+                const today = new Date().toDateString();
                 const completion = await openai.chat.completions.create({
                     model: "gpt-4-turbo",
-                    messages: [{ role: "user", content: "Suggest a trending stock for today with its ticker symbol, price, and reasoning." }],
+                    messages: [{ role: "user", content: "Suggest the best stock to invest in today with its ticker symbol, current price, reason for recommendation, and a fun fact about the stock." }],
                     temperature: 0.7,
                     max_tokens: 2000
                 });
                 
                 const stockDetails = completion.choices[0].message.content.trim().split(" - ");
+                document.getElementById("current-date").textContent = today;
                 document.getElementById("stock-symbol").textContent = stockDetails[0] || "N/A";
                 document.getElementById("stock-reason").textContent = stockDetails[1] || "No reason provided.";
                 document.getElementById("ai-explanation").textContent = stockDetails[2] || "No explanation available.";
+                document.getElementById("stock-fun-fact").textContent = stockDetails[3] || "Fun fact not available.";
             } catch (error) {
                 console.error("Error fetching stock recommendation:", error);
                 document.getElementById("error-log").textContent = `Error: ${error.message}`;
@@ -75,12 +78,14 @@
 </head>
 <body>
     <div class="container">
-        <h1 class="glow">🍎 Apple a Day = Keeps Losses Awaypo! 📈</h1>
+        <h1 class="glow">🍎 Apple a Day - Keeps Losses Awaygg! 📈</h1>
+        <h2 class="subheading">📅 Today's Date: <span id="current-date">Loading...</span></h2>
         <h2 class="subheading">📊 Today's AI Recommended Stock is: </h2>
         <div class="stock-card">
             <h2 id="stock-symbol">Loading...</h2>
             <p id="stock-reason">Analyzing trends...</p>
             <p id="ai-justification">Why AI recommends this: <span id="ai-explanation">Fetching data...</span></p>
+            <p id="stock-fun-fact">🧐 Fun Fact: Loading...</p>
             <p id="error-log" class="error-message"></p>
         </div>
         <canvas id="stockChart"></canvas>
