@@ -16,7 +16,7 @@ document.addEventListener("DOMContentLoaded", async function () {
             });
 
             if (!response.ok) {
-                throw new Error(`OpenAI API request failed with status: ${response.status}`);
+                throw new Error(`OpenAI API request failed with status: ${response.status}. Check API key or usage limits.`);
             }
 
             const data = await response.json();
