@@ -32,3 +32,8 @@ canvas {
     height: auto;
     margin-top: 20px;
 }
+
+.error-message {
+    color: red;
+    font-weight: bold;
+}
